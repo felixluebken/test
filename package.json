@@ -1,0 +1,32 @@
+{
+  "name": "testing",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	  "start": "electron .",
+    "build": "electron-builder build --win --publish never",
+"deploy": "electron-builder build --win --publish always"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^11.2.3",
+    "electron-builder": "^22.9.1"
+  },
+  "dependencies": {
+    "electron-updater": "^4.3.5"
+  },
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/felixluebken/test.git"
+  },
+  "build": {
+    "publish": [{
+        "provider": "github",
+        "owner": "felixluebken",
+        "repo": "test"
+    }]
+  }
+}
