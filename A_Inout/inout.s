@@ -41,12 +41,14 @@ inout:
   # read input
   movq $0, %rax                    # get user input(0)
   movq $0, %rdi                    # standard input
-  movq $number, %rsi               # store in number
+  movq $number, %rsi
   movq $16, %rdx                   # length of input
   syscall
-  incq -8(%rsi)
-  syscall
+ 
+# TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+
+# ^TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
   # output(Old fashion) init:  number: .asciz "%d"
 
