@@ -39,14 +39,19 @@ inout:
   movq $16, %rdx                   # sys_write
   syscall                          # sys_write  "Input a number"
   # read input
-  movq $0, %rax                    # get user input(0)
-  movq $0, %rdi                    # standard input
-  movq $number, %rsi
-  movq $16, %rdx                   # length of input
-  syscall
+#  movq $0, %rax                    # get user input(0)
+#  movq $0, %rdi                    # standard input
+#  movq $number, %rsi
+#  movq $16, %rdx                   # length of input
+#  syscall
  
 # TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+subq $8 , %rsp
+leaq -8(%rbp), %rsi
+movq $number, %rdi
+movq $0, %rax
+call scanf
 
 # ^TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
