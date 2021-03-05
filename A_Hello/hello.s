@@ -3,6 +3,7 @@ mystring: .asciz "Assignment 1 - Your first simple program.\nGiovanni Fernando 2
 
 .global main
 main:
+  pushq %rax              # base pointer 
   pushq %rbp              # base pointer 
   movq $0, %rax           # no vector register in use for printf
   movq $mystring, %rdi    # load string address
