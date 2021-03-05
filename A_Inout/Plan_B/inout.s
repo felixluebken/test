@@ -30,8 +30,8 @@ inout:
    call printf                     # output
  
    leaq -16(%rbp), %rsi            # reserve memory for input
-   movq $0, %rax
-   movq $inputstr, %rdi         
+   movq $0, %rax                   # no vector registers in use for printf
+   movq $inputstr, %rdi            # place $inputstr into %rdi
    call scanf                      # get input  
    addq $8, %rsp                   # adjust stack pointer for increment below  
 
