@@ -4,6 +4,8 @@ mystring: .asciz "Assignment 1 - Your first simple program.\nGiovanni Fernando 2
 .global main
 main:
   pushq %rbp              # base pointer 
+  movq %rsp, %rbp
+  
   movq $0, %rax           # no vector register in use for printf
   movq $mystring, %rdi    # load string address
   call printf             # call the printf routine
