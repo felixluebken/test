@@ -1,23 +1,49 @@
 .text
 outstring: .asciz "The new total is: %d\n"
-teststring: .asciz "Expo %d\n"
+baseprompt: .asciz "Please input a base\n"
+inbase: .asciz "%ld"
+expprompt: .asciz "Please input a exponent\n"
+inexp: .asciz "%ld"
+
+testout1: .asciz "The test base is: %d\n"
+testout2: .asciz "The test expo is: %d\n"
+testtot: .asciz "The total is: %d\n"
 
 
+
+# comments 
+# -16 is for base
+# -24 is for expo
+# rax is for result
 
 .global main
 main:
-  pushq %rbp
+  pushq %rbp              # -8
   movq %rsp, %rbp
+  
 
-  # test init 
-  movq $5, %rsi                  # add base to %rsi
-  movq $3, %rdx                  # add exponent to %rdx
-  # test init 
+  movq $0, %rax             
+  movq $baseprompt, %rdi
+  call printf             # prompt input
 
+  leaq -16(%rbp), %rsi    # reserves memory space
+  movq $0, %rax
+  movq $inbase, %rdi
+  call scanf             
+  
 
+  movq $0, %rax             
+  movq $expprompt, %rdi
+  call printf             # prompt input
+
+  leaq -24(%rbp), %rsi    # reserves memory space
+  movq $0, %rax
+  movq $inbase, %rdi
+  call scanf             
+  
+# output from here
   call pow                       # call function "pow"
-
-#  movq $699, %rax
+ 
   movq %rax,  %rsi
 
   movq $outstring, %rdi
@@ -34,49 +60,36 @@ main:
 
 
 pow:
-  pushq %rbp                     # init
-  movq %rsp, %rbp    
+#  pushq %rbp                         # Prologue
+#  movq %rsp, %rbp                    # Copy stack pointer to RBP
 
-  movq %rsi, %rax                # set rax with base
 
-  pushq %rdx
-  cmpq $0, %rdx                  # compare 0 and power
+  movq -16(%rbp), %rax                # set rax with base
+
+  cmpq $0, -24(%rbp)                 # compare 0 and power
   je loopzero                    # if power = 0 then set base to 1     
 
-
   loopbegin:
-   
-    cmpq $1, -8(%rbp )               # compare 1 and power
+
+    cmpq $1, -24(%rbp)              # compare 1 and power
     je loopend                   # if power = 1 then end loop
     
-    mulq %rsi                    # multiply base to with %rax
-    subq $1, -8(%rbp )               # deduct power
-  
+    mulq -16(%rbp)                   # multiply base to with %rax
+    decq -24(%rbp)             # deduct power
 
+   
+    
     jmp loopbegin                # restart loop 
 
-   loopzero:                      # power is 0
-     movq $1, %rax             # set base to 1
+  loopzero:                      # power is 0
+    movq $1, %rax             # set base to 1
     
   loopend:                       # calculation finished 
 
 
-  movq %rbp, %rsp     
-  popq %rbp                      # exit              
+#  movq %rbp, %rsp     
+#  popq %rbp                      # exit              
         
 
   ret                            # return to main
 
-
-
-#  movq $10, %rsi                 # add base to %rsi
-#  movq $1200, %rdx               # add exponent to %rdx
-#  addq %rdx, %rsi                # rsi = rsi + rdx
-
-
-
-
-
-
-
- # loopplus:                      # power is neg
