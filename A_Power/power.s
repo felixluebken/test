@@ -5,91 +5,84 @@ inbase: .asciz "%ld"
 expprompt: .asciz "Please input a exponent\n"
 inexp: .asciz "%ld"
 
-testout1: .asciz "The test base is: %d\n"
-testout2: .asciz "The test expo is: %d\n"
-testtot: .asciz "The total is: %d\n"
-
-
-
 # comments 
-# -16 is for base
-# -24 is for expo
+# -16(%rbp) is for base
+# -24(%rbp) is for expo
 # rax is for result
 
 .global main
 main:
-  pushq %rbp              # -8
-  movq %rsp, %rbp
+  pushq %rbp              # Prologue
+  movq %rsp, %rbp         # Copy stack pointer to RBP
   
 
-  movq $0, %rax             
-  movq $baseprompt, %rdi
+  movq $0, %rax           # no vector registers in use
+  movq $baseprompt, %rdi  # load address of prompt
   call printf             # prompt input
 
   leaq -16(%rbp), %rsi    # reserves memory space
-  movq $0, %rax
-  movq $inbase, %rdi
-  call scanf             
+  movq $0, %rax           # load address of stack var in rsi
+  movq $inbase, %rdi      # load first argument of scanf
+  call scanf              # call scanf
   
 
-  movq $0, %rax             
-  movq $expprompt, %rdi
-  call printf             # prompt input
+  movq $0, %rax           
+  movq $expprompt, %rdi   
+  call printf             
 
-  leaq -24(%rbp), %rsi    # reserves memory space
-  movq $0, %rax
-  movq $inbase, %rdi
-  call scanf             
+  leaq -24(%rbp), %rsi    
+  movq $0, %rax           
+  movq $inbase, %rdi      
+  call scanf              
   
-# output from here
-  call pow                       # call function "pow"
+  call pow                # call function "pow"
  
-  movq %rax,  %rsi
+  movq %rax,  %rsi        # move contents of RAX to RSI for output
 
-  movq $outstring, %rdi
-  movq $0, %rax             
-  call printf
+  movq $outstring, %rdi   # load format for output
+  movq $0, %rax              
+  call printf             # output answer
 
 
 
-  movq %rbp, %rsp     
-  popq %rbp 
+  movq %rbp, %rsp         # Epilogue: clear variables from stack
+  popq %rbp               # Restore base pointer
   end:
-  mov $0, %rdi
-  call exit
+  mov $0, %rdi            # load program exit code
+  call exit               # exit program
 
 
 pow:
-#  pushq %rbp                         # Prologue
-#  movq %rsp, %rbp                    # Copy stack pointer to RBP
+ # pushq %rbp              # Prologue
+ # movq %rsp, %rbp         # Copy stack pointer to RBP
 
 
-  movq -16(%rbp), %rax                # set rax with base
+  movq -16(%rbp), %rax    # set rax with base
 
-  cmpq $0, -24(%rbp)                 # compare 0 and power
-  je loopzero                    # if power = 0 then set base to 1     
+  cmpq $0, -24(%rbp)      # compare 0 and power
+  je loopzero             # if power = 0 then set base to 1     
 
   loopbegin:
 
-    cmpq $1, -24(%rbp)              # compare 1 and power
-    je loopend                   # if power = 1 then end loop
+    cmpq $1, -24(%rbp)    # compare 1 and power
+    je loopend            # if power = 1 then end loop
     
-    mulq -16(%rbp)                   # multiply base to with %rax
-    decq -24(%rbp)             # deduct power
+    mulq -16(%rbp)        # multiply base to with %rax
+    decq -24(%rbp)        # deduct power
 
    
     
-    jmp loopbegin                # restart loop 
+    jmp loopbegin         # restart loop 
 
-  loopzero:                      # power is 0
-    movq $1, %rax             # set base to 1
+  loopzero:               # power is 0
+    movq $1, %rax         # set base to 1
     
-  loopend:                       # calculation finished 
+  loopend:                # calculation finished 
 
 
 #  movq %rbp, %rsp     
-#  popq %rbp                      # exit              
+#  popq %rbp               # exit              
         
 
-  ret                            # return to main
+  ret                      # return to main
 
