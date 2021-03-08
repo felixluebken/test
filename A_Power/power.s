@@ -8,7 +8,7 @@ inexp: .asciz "%ld"
 # comments 
 # -16(%rbp) is for base
 # -24(%rbp) is for expo
-# rax is for result
+# RAX is for result
 
 .global main
 main:
