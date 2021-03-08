@@ -5,11 +5,6 @@ inbase: .asciz "%ld"
 expprompt: .asciz "Please input a exponent\n"
 inexp: .asciz "%ld"
 
-# comments 
-# -16(%rbp) is for base
-# -24(%rbp) is for expo
-# RAX is for result
-
 .global main
 main:
   pushq %rbp              # Prologue
@@ -26,15 +21,19 @@ main:
   call scanf              # call scanf
   
 
-  movq $0, %rax           
+  movq $0, %rax           # repeat of above
   movq $expprompt, %rdi   
   call printf             
 
   leaq -24(%rbp), %rsi    
   movq $0, %rax           
   movq $inbase, %rdi      
-  call scanf              
-  
+  call scanf  
+
+
+  movq -16(%rbp), %rdi    # store values for copy later(rbp gets cleared)
+  movq -24(%rbp), %rsi
+
   call pow                # call function "pow"
  
   movq %rax,  %rsi        # move contents of RAX to RSI for output
@@ -42,8 +41,6 @@ main:
   movq $outstring, %rdi   # load format for output
   movq $0, %rax              
   call printf             # output answer
-
-
 
   movq %rbp, %rsp         # Epilogue: clear variables from stack
   popq %rbp               # Restore base pointer
@@ -53,25 +50,25 @@ main:
 
 
 pow:
- # pushq %rbp              # Prologue
- # movq %rsp, %rbp         # Copy stack pointer to RBP
+  pushq %rbp              # Prologue
+  movq %rsp, %rbp         # Copy stack pointer to RBP
 
+  push %rdi               # copy values back into rbp
+  push %rsi
 
-  movq -16(%rbp), %rax    # set rax with base
+  movq -8(%rbp), %rax     # set rax with base
 
-  cmpq $0, -24(%rbp)      # compare 0 and power
+  cmpq $0, -16(%rbp)      # compare 0 and power
   je loopzero             # if power = 0 then set base to 1     
 
   loopbegin:
 
-    cmpq $1, -24(%rbp)    # compare 1 and power
+    cmpq $1, -16(%rbp)    # compare 1 and power
     je loopend            # if power = 1 then end loop
     
-    mulq -16(%rbp)        # multiply base to with %rax
-    decq -24(%rbp)        # deduct power
+    mulq -8(%rbp)         # multiply base to with %rax
+    decq -16(%rbp)        # deduct power
 
-   
-    
     jmp loopbegin         # restart loop 
 
   loopzero:               # power is 0
@@ -79,10 +76,8 @@ pow:
     
   loopend:                # calculation finished 
 
-
-#  movq %rbp, %rsp     
-#  popq %rbp               # exit              
-        
-
-  ret                      # return to main
+  movq %rbp, %rsp         # Epilogue: clear variables from stack
+  popq %rbp               # Restore base pointer
+  
+  ret                     # return to main
 
