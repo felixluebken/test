@@ -7,65 +7,65 @@ outputstr: .asciz "The new number is: %ld\n"
 
 .global main
 main:
-  pushq %rbp                      
-  movq  %rsp, %rbp    
-  subq  $16, %rsp             
+  pushq %rbp                    # Prologue 
+  movq  %rsp, %rbp              # Copy stack pointer to RBP 
+  subq  $16, %rsp               
 
-  movq $0, %rax                 
-  movq $assignmentstring, %rdi  
-  call printf                   
+  movq $0, %rax                 # no vector registers in use   
+  movq $assignmentstring, %rdi  # place string into rdi
+  call printf                   # print  
 
-  call inout
+  call inout                    # call inout subroutine
 
-  movq %rbp, %rsp     
-  popq %rbp 
+  movq %rbp, %rsp               # epilogue
+  popq %rbp                     #
   
 end:
-  mov  $0, %rdi
-  call exit    
+  mov  $0, %rdi                 # loads exit code
+  call exit                     # exits the program
 
 inout:
-  pushq %rbp
-  movq  %rsp, %rbp   
+  pushq %rbp                    # Prologue
+  movq  %rsp, %rbp              # Copy stack pointer to RBP 
   subq  $16, %rsp            
 
-  movq $0, %rax                 
-  movq $numberprompt, %rdi     
-  call printf                    
+  movq $0, %rax                 # no vector registers in use    
+  movq $numberprompt, %rdi      # place string into rdi   
+  call printf                   # print
  
-  leaq -8(%rbp), %rsi  
-  movq $0, %rax          
-  movq $inputnmbr, %rdi           
-  call scanf                         
+  leaq -8(%rbp), %rsi           # reserves memory space
+  movq $0, %rax                 # load address of stack var in rsi
+  movq $inputnmbr, %rdi         # load argument of scanf      
+  call scanf                    # call scanf         
    
-  movq -8(%rbp), %rax
+  movq -8(%rbp), %rax           # move value at rbp to rax
   
-  call factorial
+  call factorial                # call factorial subroutine
 
-  movq %rax, %rsi
-  movq $0, %rax
-  movq $outputstr, %rdi
-  call printf    
+  movq %rax, %rsi               # copy rax content into rsi
+  movq $0, %rax                 # no vector registers in use
+  movq $outputstr, %rdi         # place string into rdi
+  call printf                   # print
     
-  movq %rbp, %rsp     
-  popq %rbp                 # output incremented number               
+  movq %rbp, %rsp               # epilogue
+  popq %rbp                     #                
 
-  ret                              # return to main
+  ret                           # return to main
 
 factorial:
 
 
-  cmpq $1, -8(%rbp)  # if 1 jump to basecase
+  cmpq $1, -8(%rbp)             # if 1 jump to basecase
   je   basecase
 
-  decq -8(%rbp)
-  mulq -8(%rbp)                     
+  decq -8(%rbp)                 # decrease value by 1
+  mulq -8(%rbp)                 # multiply rax by the input value       
 
-  call factorial
+  call factorial                # call factorial again
 
 basecase:
   
-  ret
+  ret                           # return to main
                    
   
 
