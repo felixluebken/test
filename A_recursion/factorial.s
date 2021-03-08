@@ -1,55 +1,72 @@
 .text
-assignmentstring: .asciz "Assignment 2: inout\n"
+assignmentstring: .asciz "Assignment 4: Factorial\n"
 numberprompt: .asciz "Input a number\n"
-inputstr: .asciz "%d"
-outputstr: .asciz "The new number is: %d\n"
+inputnmbr: .asciz "%ld"
+outputstr: .asciz "The new number is: %ld\n"
 
 
 .global main
 main:
-  pushq %rbp                      # initilise base pointer and stack pointer
-  movq %rsp, %rbp                 # initilise base pointer and stack pointer
+  pushq %rbp                      
+  movq  %rsp, %rbp    
+  subq  $16, %rsp             
 
-  movq $0, %rax                   # no vector registers in use for printf  
-  movq $assignmentstring, %rdi    # place $assignmentstring into %rdi
-  call printf                     # output
+  movq $0, %rax                 
+  movq $assignmentstring, %rdi  
+  call printf                   
 
-  call inout                      # call function "inout"
+  call inout
 
   movq %rbp, %rsp     
   popq %rbp 
-  end:
-  mov $0, %rdi
-  call exit
-
+  
+end:
+  mov  $0, %rdi
+  call exit    
 
 inout:
-   pushq %rbp
-   movq %rsp, %rbp                 # init
+  pushq %rbp
+  movq  %rsp, %rbp   
+  subq  $16, %rsp            
 
-   movq $0, %rax                   # no vector registers in use for printf  
-   movq $numberprompt, %rdi        # move string to register %rdi
-   call printf                     # output
+  movq $0, %rax                 
+  movq $numberprompt, %rdi     
+  call printf                    
  
-   leaq -16(%rbp), %rsi            # reserve memory for input
-   movq $0, %rax                   # no vector registers in use for printf
-   movq $inputstr, %rdi            # place $inputstr into %rdi
-   call scanf                      # get input  
-   addq $8, %rsp                   # adjust stack pointer for increment below  
+  leaq -8(%rbp), %rsi  
+  movq $0, %rax          
+  movq $inputnmbr, %rdi           
+  call scanf                         
+   
+  movq -8(%rbp), %rax
+  
+  call factorial
 
-   call factorial           
+  movq %rax, %rsi
+  movq $0, %rax
+  movq $outputstr, %rdi
+  call printf    
+    
+  movq %rbp, %rsp     
+  popq %rbp                 # output incremented number               
+
+  ret                              # return to main
 
 factorial:
 
-    pushq %rbp # Prologue : push the base p o i n t e r .
-    movq %rsp , %rbp # and copy s tack po int e r to RBP.
 
-    movq %rdi, %rax
-    movq $outputstr, %rdi
-    movq $0, %rax
-    call printf                    # output factorial number    
+  cmpq $1, -8(%rbp)  # if 1 jump to basecase
+  je   basecase
 
-    movq %rbp , %r sp # Epi logue : c l e a r l o c a l v a r i a b l e s from s t a c k .
-    popq %rbp # Re s tor e c a l l e r ' s base p o i n t e r .
+  decq -8(%rbp)
+  mulq -8(%rbp)                     
 
-    ret main
+  call factorial
+
+basecase:
+  
+  ret
+                   
+  
+
+  
