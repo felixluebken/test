@@ -1,0 +1,8 @@
+- Input a number N.
+- Check whether N is 1 or 0.
+- If 0 jump to zerocase and return 1.
+- If 1 jump to basecase and return 1.
+- if no decrease the value of N by 1. 
+- Multiply N by the decreased value. 
+- Repeat the proccess of decreasing and multiplying until N = 1.
+- Print the value of N factorial.
