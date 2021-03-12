@@ -1,0 +1,6 @@
+- Input a number N
+- Compare is N is 0
+- If N is 0 return value 1.
+- If N is not 0 decrease the value by 1 and multiply 
+- Repeat the proccess until N is 0
+- Print the value of N factorial.
